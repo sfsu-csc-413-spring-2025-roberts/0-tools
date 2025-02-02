@@ -1,0 +1,17 @@
+PROGRAM         ::= 'program' BLOCK
+BLOCK           ::= '{' DECL* STATEMENT* '}'
+DECL            ::= VAR_DECL | FUNCTION_DECL
+VAR_DECL        ::= TYPE IDENTIFIER
+FUNCTION_DECL   ::= TYPE IDENTIFIER '(' FORMALS ')' BLOCK
+FORMALS         ::= ε | VAR_DECL (',' VAR_DECL)*
+TYPE            ::= 'int' | 'bool'
+STATEMENT       ::= IF | WHILE | RETURN | BLOCK | ASSIGNMENT
+IF              ::= 'if' EXP 'then' BLOCK 'else' BLOCK
+WHILE           ::= 'while' EXP BLOCK
+RETURN          ::= 'return' EXP
+EXP             ::= SIMPLE_EXP | SIMPLE_EXP '==' SIMPLE_EXP | SIMPLE_EXP '!=' SIMPLE_EXP |                     SIMPLE_EXP '<' SIMPLE_EXP | SIMPLE_EXP '<=' SIMPLE_EXP
+SIMPLE_EXP      ::= TERM | SIMPLE_EXP '+' TERM | SIMPLE_EXP '-' TERM | SIMPLE_EXP '|' TERM
+TERM            ::= FACTOR | TERM '*' FACTOR | TERM '/' FACTOR | TERM '&' FACTOR
+FACTOR          ::= '(' EXP ')' | IDENTIFIER | <int> | IDENTIFIER '(' PARAMS ')'
+PARAMS          ::= ε | EXP (',' EXP)*
+IDENTIFIER      ::= <id>

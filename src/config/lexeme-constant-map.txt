@@ -1,0 +1,22 @@
+# OPERATORS provides a mapping between lexemes and their symbolic constant (since we can't guess the name from the grammar)
++  Plus
+-  Minus
+*  Multiply
+/  Divide
+&  And
+|  Or
+=  Assign
+== Equal
+!  NotEqual
+<  Less
+<= LessEqual
+>  Greater
+>= GreaterEqual
+{  LeftBrace
+}  RightBrace
+(  LeftParen
+)  RightParen
+;  Semicolon
+^  Power
+[  LeftBracket
+]  RightBracket
