@@ -36,6 +36,10 @@ public class Grammar {
         return terminals.stream().toList();
     }
 
+    public List<GrammarSymbol> getIntrinsics() {
+        return null;
+    }
+
     public List<GrammarSymbol> getKeywords() {
         return keywords;
     }
