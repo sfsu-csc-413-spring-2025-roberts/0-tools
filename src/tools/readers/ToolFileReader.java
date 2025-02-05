@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class ToolFileReader implements Iterator<String> {
+public abstract class ToolFileReader<T> implements Iterator<String> {
     private int index;
     private List<String> lines;
 
@@ -28,5 +28,5 @@ public abstract class ToolFileReader implements Iterator<String> {
         return this.lines.get(this.index++);
     }
 
-    public abstract void read();
+    public abstract T read();
 }

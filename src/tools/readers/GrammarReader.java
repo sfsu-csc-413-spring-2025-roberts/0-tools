@@ -6,23 +6,20 @@ import java.nio.file.Path;
 import tools.daos.Grammar;
 import tools.daos.SymbolicConstants;
 
-public class GrammarReader extends ToolFileReader {
+public class GrammarReader extends ToolFileReader<Grammar> {
     private Grammar grammar;
     private SymbolicConstants symbolicConstants;
 
     public GrammarReader(Path grammarFile, Path symbolicConstantsFile) throws IOException {
         super(grammarFile);
 
-        SymbolicConstantsReader reader = new SymbolicConstantsReader(symbolicConstantsFile);
-        reader.read();
-        this.symbolicConstants = reader.getConstants();
+        this.symbolicConstants = new SymbolicConstantsReader(symbolicConstantsFile).read();
 
         this.grammar = new Grammar(symbolicConstants);
     }
 
     @Override
-    public void read() {
-
+    public Grammar read() {
         while (this.hasNext()) {
             String[] line = this.next().split("::=");
 
@@ -35,5 +32,11 @@ public class GrammarReader extends ToolFileReader {
                 this.grammar.addProduction(nonTerminal, rule);
             }
         }
+
+        return this.grammar;
+    }
+
+    public Grammar getGrammar() {
+        return this.grammar;
     }
 }

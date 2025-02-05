@@ -102,7 +102,10 @@ public class Grammar {
         return operators;
     }
 
-    public List<String> getProductions(String nonTerminal) {
-        return productions.get(nonTerminal);
+    public List<String> getProductions() {
+        return productions.entrySet().stream()
+                .flatMap(entry -> entry.getValue().stream()
+                        .map(rule -> String.format("%-15s ::= %s", entry.getKey(), rule)))
+                .toList();
     }
 }

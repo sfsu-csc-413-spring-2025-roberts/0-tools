@@ -5,7 +5,7 @@ import java.nio.file.Path;
 
 import tools.daos.SymbolicConstants;
 
-public class SymbolicConstantsReader extends ToolFileReader {
+public class SymbolicConstantsReader extends ToolFileReader<SymbolicConstants> {
     private SymbolicConstants constants;
 
     public SymbolicConstantsReader(Path path) throws IOException {
@@ -15,12 +15,14 @@ public class SymbolicConstantsReader extends ToolFileReader {
     }
 
     @Override
-    public void read() {
+    public SymbolicConstants read() {
         while (this.hasNext()) {
             String[] line = this.next().split("\\s+");
 
             this.constants.addConstant(line[0].trim(), line[1].trim());
         }
+
+        return this.constants;
     }
 
     public SymbolicConstants getConstants() {

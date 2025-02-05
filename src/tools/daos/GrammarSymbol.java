@@ -16,4 +16,9 @@ public class GrammarSymbol {
     public String getConstantName() {
         return this.constantName;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%-15s %s", this.lexeme, this.constantName);
+    }
 }
