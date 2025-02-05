@@ -7,7 +7,7 @@
 |  Or
 =  Assign
 == Equal
-!  NotEqual
+!= NotEqual
 <  Less
 <= LessEqual
 >  Greater
