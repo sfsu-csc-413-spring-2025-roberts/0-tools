@@ -9,7 +9,8 @@ STATEMENT       ::= IF | WHILE | RETURN | BLOCK | ASSIGNMENT
 IF              ::= 'if' EXP 'then' BLOCK 'else' BLOCK
 WHILE           ::= 'while' EXP BLOCK
 RETURN          ::= 'return' EXP
-EXP             ::= SIMPLE_EXP | SIMPLE_EXP '==' SIMPLE_EXP | SIMPLE_EXP '!=' SIMPLE_EXP |                     SIMPLE_EXP '<' SIMPLE_EXP | SIMPLE_EXP '<=' SIMPLE_EXP
+ASSIGNMENT      ::= <id> '=' EXP
+EXP             ::= SIMPLE_EXP | SIMPLE_EXP '==' SIMPLE_EXP | SIMPLE_EXP '!=' SIMPLE_EXP | SIMPLE_EXP '<' SIMPLE_EXP | SIMPLE_EXP '<=' SIMPLE_EXP
 SIMPLE_EXP      ::= TERM | SIMPLE_EXP '+' TERM | SIMPLE_EXP '-' TERM | SIMPLE_EXP '|' TERM
 TERM            ::= FACTOR | TERM '*' FACTOR | TERM '/' FACTOR | TERM '&' FACTOR
 FACTOR          ::= '(' EXP ')' | IDENTIFIER | <int> | IDENTIFIER '(' PARAMS ')'
