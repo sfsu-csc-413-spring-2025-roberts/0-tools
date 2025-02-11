@@ -1,22 +1,11 @@
 package tools.grammar;
 
 public class Terminal extends Node {
-    public enum TerminalType {
-        KEYWORD,
-        TYPE,
-        OPERATOR
-    }
-
     private String lexeme;
-    private String symbolicConstant;
-    private TerminalType type;
+    private SymbolicConstant symbolicConstant;
 
-    public Terminal(Node parent, String lexeme, TerminalType type) {
-        this(parent, lexeme, type, String.format("%s%s", lexeme.substring(0, 1).toUpperCase(), lexeme.substring(1)));
-    }
-
-    public Terminal(Node parent, String lexeme, TerminalType type, String symbolicConstant) {
-        super(parent);
+    public Terminal(String lexeme, SymbolicConstant symbolicConstant) {
+        super();
 
         this.lexeme = lexeme;
         this.symbolicConstant = symbolicConstant;
@@ -26,11 +15,11 @@ public class Terminal extends Node {
         return this.lexeme;
     }
 
-    public String getSymbolicConstant() {
+    public SymbolicConstant getSymbolicConstant() {
         return this.symbolicConstant;
     }
 
-    public TerminalType getType() {
-        return this.type;
+    public SymbolicConstant.Type getType() {
+        return this.symbolicConstant.getType();
     }
 }

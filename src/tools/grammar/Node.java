@@ -4,16 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Node {
-    protected Node parent;
     protected List<Node> children;
 
-    public Node(Node parent) {
-        this.parent = parent;
+    public Node() {
         this.children = new ArrayList<>();
-    }
-
-    public Node getParent() {
-        return this.parent;
     }
 
     public void addChild(Node child) {

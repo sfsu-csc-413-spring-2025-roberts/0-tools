@@ -16,7 +16,7 @@
       "request": "launch",
       "mainClass": "tools.CompilerTools",
       "projectName": "0-tools_b35331b7",
-      "args": ["src/config/lexeme-constant-map.txt", "src/config/x-grammar.txt"]
+      "args": ["src/tools/definition/grammar.txt"]
     },
     {
       "type": "java",
