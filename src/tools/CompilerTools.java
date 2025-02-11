@@ -7,6 +7,7 @@ import tools.grammar.Grammar;
 import tools.readers.GrammarReader;
 import tools.writers.SummaryWriter;
 import tools.writers.TextWriter;
+import tools.writers.TokenKindWriter;
 
 public class CompilerTools {
     public static void main(String[] args) throws Exception {
@@ -47,7 +48,7 @@ public class CompilerTools {
         }
 
         if (lexer) {
-            System.out.println("Generating lexer files...");
+            new TokenKindWriter(grammar).write();
         }
     }
 
