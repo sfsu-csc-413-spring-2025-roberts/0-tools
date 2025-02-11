@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import tools.grammar.Grammar;
 import tools.readers.GrammarReader;
+import tools.writers.SummaryWriter;
 import tools.writers.TextWriter;
 
 public class CompilerTools {
@@ -16,6 +17,7 @@ public class CompilerTools {
                     "Debug mode to output debugging information while reading the grammar");
             System.out.printf("   %-15s %s%n", "-h --help", "Show this help message");
             System.out.printf("   %-15s %s%n", "-v --verbose", "Output result of reading the grammar file");
+            System.out.printf("   %-15s %s%n", "-s --summary", "Output concise result of reading the grammar file");
             System.out.printf("   %-15s %s%n", "-1 --lexer",
                     "(Re)Generate the files for the lexer (token kind enumeration and symbol table)");
             System.out.printf("   %-15s %s%n", "-2 --parser",
@@ -25,11 +27,16 @@ public class CompilerTools {
 
         boolean debug = hasCommandLineArgument(args, "--debug", "-d");
         boolean verbose = hasCommandLineArgument(args, "--verbose", "-v");
+        boolean summary = hasCommandLineArgument(args, "--summary", "-s");
 
         boolean parser = hasCommandLineArgument(args, "--parser", "-2");
         boolean lexer = hasCommandLineArgument(args, "--lexer", "-1") || parser;
 
         Grammar grammar = new GrammarReader(Path.of(args[0]), debug).read();
+
+        if (summary) {
+            new SummaryWriter(grammar).write();
+        }
 
         if (verbose) {
             new TextWriter(grammar).write();
