@@ -6,6 +6,7 @@ import java.util.Arrays;
 import tools.grammar.Grammar;
 import tools.readers.GrammarReader;
 import tools.writers.SummaryWriter;
+import tools.writers.SymbolTableWriter;
 import tools.writers.TextWriter;
 import tools.writers.TokenKindWriter;
 
@@ -44,11 +45,12 @@ public class CompilerTools {
         }
 
         if (parser) {
-            System.out.println("Generating parser files...");
+            System.out.println("If we're on assignment 2 and you see this, I messed up");
         }
 
         if (lexer) {
             new TokenKindWriter(grammar).write();
+            new SymbolTableWriter(grammar).write();
         }
     }
 

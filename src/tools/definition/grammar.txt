@@ -1,6 +1,4 @@
 # SEPARATOR_NAMES
-[  LeftBracket
-]  RightBracket
 ,  Comma
 {  LeftBrace
 }  RightBrace
@@ -19,9 +17,6 @@
 != NotEqual
 <  Less
 <= LessEqual
->  Greater
->= GreaterEqual
-^  Power
 # IMPLICIT_ASTS
 # Some productions do not require an AST node (and we can't infer from the production if that's the case)
 DECL            # This will resolve to _either_ a variable declaration, or a function declaration
