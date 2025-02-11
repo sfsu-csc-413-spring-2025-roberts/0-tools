@@ -5,6 +5,7 @@
 /  Divide
 &  And
 |  Or
+,  Comma
 =  Assign
 == Equal
 != NotEqual

@@ -38,6 +38,10 @@ public class Grammar {
     public void addTerminal(String nonTerminal, String quotedTerminal) {
         String terminal = quotedTerminal.replace("'", "");
 
+        if (this.terminals.contains(terminal)) {
+            return;
+        }
+
         this.terminals.add(terminal);
 
         if (symbolicConstants.getConstant(terminal) != null) {
@@ -48,7 +52,8 @@ public class Grammar {
             this.types.add(new GrammarSymbol(terminal, String.format("%sType", upCased)));
             this.types.add(new GrammarSymbol(String.format("<%s>", terminal), String.format("%sLit", upCased)));
         } else {
-            this.keywords.add(new GrammarSymbol(terminal, terminal));
+            this.keywords.add(new GrammarSymbol(terminal,
+                    String.format("%s%s", terminal.substring(0, 1).toUpperCase(), terminal.substring(1))));
         }
     }
 
@@ -58,15 +63,40 @@ public class Grammar {
         }
 
         this.productions.get(nonTerminal).add(rule);
+        this.processRuleParts(nonTerminal, rule.split("\\s+"));
+    }
 
-        String[] ruleParts = rule.split("\\s+");
-        for (String rulePart : ruleParts) {
+    private void processRuleParts(String nonTerminal, String[] ruleParts) {
+        String[] ungrouped = this.ungroupRuleParts(ruleParts);
+
+        for (String rulePart : ungrouped) {
             if (rulePart.startsWith("'")) {
                 this.addTerminal(nonTerminal, rulePart);
             } else {
                 this.addNonTerminal(nonTerminal);
             }
         }
+    }
+
+    private String[] ungroupRuleParts(String[] grouping) {
+        String[] degrouped = new String[grouping.length];
+
+        for (int i = 0; i < grouping.length; i++) {
+            degrouped[i] = grouping[i];
+
+            if (degrouped[i].startsWith("(")) {
+                degrouped[i] = degrouped[i].substring(1);
+            }
+
+            int groupClose = degrouped[i].lastIndexOf(")");
+            if (groupClose != -1 && groupClose == degrouped[i].length() - 1) {
+                degrouped[i] = degrouped[i].substring(0, groupClose);
+            } else if (groupClose != -1 && degrouped[i].charAt(groupClose + 1) != '\'') {
+                degrouped[i] = degrouped[i].substring(0, groupClose);
+            }
+        }
+
+        return degrouped;
     }
 
     public List<String> getNonTerminals() {
