@@ -28,7 +28,7 @@ public class SummaryWriter extends GrammarWriter {
         String lineFormat = "%-20s %s%n";
         String lexemeFormat = "%-" + columnSize + "s";
 
-        String heading = String.format("%s (%d):", title, lexemes.size());
+        String heading = String.format("%-11s (%2d):", title, lexemes.size());
         List<String> displayLexemes = lexemes.stream().map(lexeme -> String.format(lexemeFormat, lexeme)).toList();
 
         System.out.printf(lineFormat, heading, String.join(" ", displayLexemes));
