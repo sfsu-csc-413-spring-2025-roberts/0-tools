@@ -45,7 +45,7 @@ ASSIGNMENT      ::= <id> '=' REL_OP
 REL_OP          ::= ADD_OP | ADD_OP '==' ADD_OP | ADD_OP '!=' ADD_OP | ADD_OP '<' ADD_OP | ADD_OP '<=' ADD_OP
 ADD_OP          ::= MULT_OP | ADD_OP '+' MULT_OP | ADD_OP '-' MULT_OP | ADD_OP '|' MULT_OP
 MULT_OP         ::= FACTOR | MULT_OP '*' FACTOR | MULT_OP '/' FACTOR | MULT_OP '&' FACTOR
-FACTOR          ::= '(' REL_OP ')' | IDENTIFIER | <int> | CALL
+FACTOR          ::= '(' REL_OP ')' | IDENTIFIER | CALL | <int>
 CALL            ::= IDENTIFIER '(' PARAMS ')'
 PARAMS          ::= ε | REL_OP (',' REL_OP)*
 IDENTIFIER      ::= <id>
