@@ -10,7 +10,7 @@ public class SummaryWriter extends GrammarWriter {
 
     @Override
     public void write() throws Exception {
-        System.out.println("=== Grammar (may include terminals not used this semester) ===");
+        System.out.println("=== Grammar Summary ===");
         System.out.printf("%d non terminals, %d AST nodes, %d terminals, %d productions%n",
                 grammar.getNonTerminals().size(), grammar.getAstCount(),
                 grammar.getTerminals().size(), grammar.getProductions().size());
