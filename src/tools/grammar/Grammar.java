@@ -50,6 +50,18 @@ public class Grammar {
                 }).sorted().toList();
     }
 
+    public List<String> getAstsWithoutSymbols() {
+        return this.nodes.entrySet().stream()
+                .filter(entry -> entry.getValue() instanceof NonTerminal
+                        && !this.implicitAstNodes.contains(entry.getKey())
+                        && !this.astsWithSymbols.contains(entry.getKey()))
+                .map(Map.Entry::getKey).sorted().toList();
+    }
+
+    public List<String> getAstsWithSymbols() {
+        return this.astsWithSymbols.stream().sorted().toList();
+    }
+
     public int getAstCount() {
         return this.getAstNodes().size();
     }
