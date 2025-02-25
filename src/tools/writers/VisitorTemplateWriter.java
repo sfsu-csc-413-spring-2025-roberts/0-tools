@@ -18,6 +18,11 @@ public class VisitorTemplateWriter extends AstNodeWriter {
     public VisitorTemplateWriter(Grammar grammar, String className) {
         super(grammar);
 
+        int pathSeparatorIndex = className.lastIndexOf(System.lineSeparator());
+        if (pathSeparatorIndex != -1) {
+            className = className.substring(pathSeparatorIndex + 1);
+        }
+
         this.className = className;
         this.file = new File(String.format("src/visitor/%s.java", className));
     }

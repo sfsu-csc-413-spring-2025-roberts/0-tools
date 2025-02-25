@@ -85,9 +85,10 @@ public class CompilerTools {
     private static String getCommandLineArgumentValue(String[] args, String... options) {
         for (String option : options) {
             int index = Arrays.asList(args).indexOf(option);
+            System.out.println(String.format("index of %s: %d", option, index));
 
             if (index == -1 || index + 1 >= args.length) {
-                return null;
+                continue;
             }
 
             return args[index + 1];
