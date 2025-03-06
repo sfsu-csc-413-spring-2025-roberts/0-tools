@@ -11,6 +11,7 @@ import tools.writers.AstNodeWriter;
 import tools.writers.PrintVisitorWriter;
 import tools.writers.SummaryWriter;
 import tools.writers.SymbolTableWriter;
+import tools.writers.TestVisitorWriter;
 import tools.writers.TextWriter;
 import tools.writers.TokenKindWriter;
 import tools.writers.VisitorBaseClassWriter;
@@ -75,6 +76,7 @@ public class CompilerTools {
             VisitorBaseClassWriter.prepareVisitorDirectory();
             new VisitorBaseClassWriter(grammar).write();
             new PrintVisitorWriter(grammar).write();
+            new TestVisitorWriter(grammar).write();
         }
     }
 

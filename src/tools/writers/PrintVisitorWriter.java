@@ -61,7 +61,7 @@ public class PrintVisitorWriter extends AstNodeWriter {
                 writer.write(this.formattedLine(
                         String.format("public AST visit%s(AST node) throws Exception {", node), 1, 1));
                 writer.write(this.formattedLine(String.format(
-                        "this.print(String.format(\"%s: %%s\", ((SymbolTree) node).getSymbol().getLexeme()), node);",
+                        "this.print(String.format(\"%s: %%s\", ((TokenTree) node).getToken().getLexeme()), node);",
                         node), 2, 1));
                 writer.write(this.formattedLine("return null;", 2, 1));
                 writer.write(this.formattedLine("}", 1, 2));
