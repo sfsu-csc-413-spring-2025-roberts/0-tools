@@ -1,0 +1,89 @@
+package tests.helpers;
+
+import java.util.List;
+
+import $astPackageName.$astClassName;
+import $astPackageName.$interfaceWithTokenName;
+import $visitorPackageName.$visitorClassName;
+
+public class TestVisitor extends $visitorClassName {
+
+    private List<$astClassName> expected;
+    private int index;
+
+    public TestVisitor(final List<$astClassName> expected) {
+        this.expected = expected;
+        this.index = 0;
+    }
+
+    public Object test($astClassName t) throws Exception {
+
+        try {
+            expected.get(index).getClass().cast(t);
+
+            index++;
+
+            return testChildren(t);
+        } catch (ClassCastException exception) {
+            return String.format(
+                "Expected [%s] but got [%s]",
+                expected.get(index).getClass().getSimpleName(),
+                t.getClass().getSimpleName());
+        }
+    }
+
+    private Object test($astClassName t, String expectedLexeme, String actualLexeme) {
+        try {
+            expected.get(index).getClass().cast(t);
+
+            if (!expectedLexeme.equals(actualLexeme)) {
+                throw new Exception(
+                    String.format(
+                        "Expected [%s] but got [%s]",
+                            expectedLexeme,
+                            actualLexeme));
+            }
+
+            index++;
+            return testChildren(t);
+        } catch (ClassCastException exception) {
+            return String.format(
+                "Expected [%s] but got [%s]",
+                expected.get(index).getClass().getSimpleName(),
+                t.getClass().getSimpleName());
+        } catch (Exception exception) {
+            return exception.getMessage();
+        }
+    }
+
+    private Object testChildren($astClassName t) throws Exception {
+        for ($astClassName child : t.getChildren()) {
+            Object result = child.accept(this);
+
+            if (result != null) {
+                return result;
+            }
+        }
+
+        return null;
+    }
+
+    #foreach($className in $astsWithoutTokens)
+    @Override
+    public Object visit$className($astClassName node) throws Exception {
+        return test(node);
+    }
+
+    #end
+
+    #foreach($className in $astsWithTokens)
+    @Override
+    public Object visit$className($astClassName node) throws Exception {
+        String actualLexeme = (($interfaceWithTokenName)node).getToken().getLexeme();
+        String expectedLexeme = (($interfaceWithTokenName)expected.get(index)).getToken().getLexeme();
+
+        return test(node, expectedLexeme, actualLexeme);
+    }
+
+    #end
+}

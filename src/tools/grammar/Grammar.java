@@ -1,200 +1,101 @@
 package tools.grammar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class Grammar {
-    private Map<String, SymbolicConstant> symbolicConstants;
-    private Map<String, List<String>> productions;
 
-    private Map<String, Node> nodes;
-    private Set<String> implicitAstNodes;
-    private Set<String> astsWithSymbols;
+    private List<SymbolicConstant> allConstants;
+    private List<String> allAsts;
 
-    private List<String> terminals;
+    private List<SymbolicConstant> keywords;
+    private List<SymbolicConstant> types;
+    private List<SymbolicConstant> operators;
+    private List<SymbolicConstant> separators;
+    private List<SymbolicConstant> internals;
+    private List<String> asts;
+    private List<String> astsWithTokens;
 
     public Grammar() {
-        this.symbolicConstants = new HashMap<>();
-        this.productions = new HashMap<>();
-
-        this.nodes = new HashMap<>();
-        this.implicitAstNodes = new HashSet<>();
-        this.astsWithSymbols = new HashSet<>();
-
-        this.terminals = new ArrayList<>();
+        this.allConstants = new ArrayList<>();
+        this.allAsts = new ArrayList<>();
+        this.keywords = new ArrayList<>();
+        this.types = new ArrayList<>();
+        this.operators = new ArrayList<>();
+        this.separators = new ArrayList<>();
+        this.internals = new ArrayList<>();
+        this.asts = new ArrayList<>();
+        this.astsWithTokens = new ArrayList<>();
     }
 
-    public List<String> getTerminals() {
-        return this.terminals;
+    public void addKeyword(SymbolicConstant keyword) {
+        this.keywords.add(keyword);
+        this.allConstants.add(keyword);
     }
 
-    public List<String> getNonTerminals() {
-        return this.productions.keySet().stream().toList();
+    public List<SymbolicConstant> getKeywords() {
+        return List.copyOf(this.keywords);
     }
 
-    public List<String> getAstNodes() {
-        return this.nodes.entrySet().stream()
-                .filter(entry -> entry.getValue() instanceof NonTerminal
-                        && !this.implicitAstNodes.contains(entry.getKey()))
-                .map(entry -> {
-                    if (this.astsWithSymbols.contains(entry.getKey())) {
-                        return String.format("%s (s)", entry.getKey());
-                    } else {
-                        return entry.getKey();
-                    }
-                }).sorted().toList();
+    public void addType(SymbolicConstant type) {
+        this.types.add(type);
+        this.allConstants.add(type);
     }
 
-    public List<String> getAstsWithoutSymbols() {
-        return this.nodes.entrySet().stream()
-                .filter(entry -> entry.getValue() instanceof NonTerminal
-                        && !this.implicitAstNodes.contains(entry.getKey())
-                        && !this.astsWithSymbols.contains(entry.getKey()))
-                .map(Map.Entry::getKey).sorted().toList();
+    public List<SymbolicConstant> getTypes() {
+        return List.copyOf(this.types);
     }
 
-    public List<String> getAstsWithSymbols() {
-        return this.astsWithSymbols.stream().sorted().toList();
+    public void addOperator(SymbolicConstant operator) {
+        this.operators.add(operator);
+        this.allConstants.add(operator);
     }
 
-    public int getAstCount() {
-        return this.getAstNodes().size();
+    public List<SymbolicConstant> getOperators() {
+        return List.copyOf(this.operators);
     }
 
-    public List<String> getProductions() {
-        return this.productions.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream()
-                        .map(production -> String.format("%-15s -> %s", entry.getKey(), production)))
-                .toList();
+    public void addSeparator(SymbolicConstant separator) {
+        this.separators.add(separator);
+        this.allConstants.add(separator);
     }
 
-    public List<String> getKeywords() {
-        return this.filterSymbolicConstants(SymbolicConstant.Type.KEYWORD);
+    public List<SymbolicConstant> getSeparators() {
+        return List.copyOf(this.separators);
     }
 
-    public List<String> getOperators() {
-        return this.filterSymbolicConstants(SymbolicConstant.Type.OPERATOR);
+    public void addInternal(SymbolicConstant internal) {
+        this.internals.add(internal);
+        this.allConstants.add(internal);
     }
 
-    public List<String> getSeparators() {
-        return this.filterSymbolicConstants(SymbolicConstant.Type.SEPARATOR);
+    public List<SymbolicConstant> getInternals() {
+        return List.copyOf(this.internals);
     }
 
-    public List<String> getLiterals() {
-        return this.filterSymbolicConstants(SymbolicConstant.Type.LITERAL);
+    public List<SymbolicConstant> getAllSymbolicConstants() {
+        return List.copyOf(this.allConstants);
     }
 
-    public List<String> getIdentifiers() {
-        return this.filterSymbolicConstants(SymbolicConstant.Type.IDENTIFIER);
+    public void addAst(String ast) {
+        this.asts.add(ast);
+        this.allAsts.add(ast);
     }
 
-    private List<String> filterSymbolicConstants(SymbolicConstant.Type type) {
-        return this.symbolicConstants.entrySet().stream()
-                .filter(entry -> entry.getValue().getType().equals(type))
-                .map(entry -> entry.getValue().getLexeme()).sorted().toList();
+    public List<String> getAsts() {
+        return List.copyOf(this.asts);
     }
 
-    public SymbolicConstant getSymbolicConstant(String lexeme) {
-        return this.symbolicConstants.get(lexeme);
+    public void addAstWithToken(String ast) {
+        this.astsWithTokens.add(ast);
+        this.allAsts.add(ast);
     }
 
-    private void addSymbolicConstant(String lexeme, SymbolicConstant terminal) {
-        this.symbolicConstants.put(lexeme, terminal);
-        this.terminals.add(lexeme);
+    public List<String> getAstsWithTokens() {
+        return List.copyOf(this.astsWithTokens);
     }
 
-    public void addOperator(String lexeme, String constantName) {
-        this.addSymbolicConstant(lexeme, new SymbolicConstant(lexeme, SymbolicConstant.Type.OPERATOR, constantName));
-    }
-
-    public void addSeparator(String lexeme, String constantName) {
-        this.addSymbolicConstant(lexeme, new SymbolicConstant(lexeme, SymbolicConstant.Type.SEPARATOR, constantName));
-    }
-
-    public void addKeyword(String lexeme) {
-        this.addSymbolicConstant(lexeme, new SymbolicConstant(lexeme, SymbolicConstant.Type.KEYWORD,
-                String.format("%s%s", lexeme.toUpperCase().charAt(0), lexeme.substring(1))));
-    }
-
-    public void addImplicitAst(String astName) {
-        this.implicitAstNodes.add(astName);
-    }
-
-    public void addAstWithSymbol(String astName) {
-        this.astsWithSymbols.add(astName);
-    }
-
-    public void addType(String lexeme) {
-        String capitalizedType = String.format("%s%s", lexeme.toUpperCase().charAt(0), lexeme.substring(1));
-
-        // This is the _type_ keyword
-        this.addSymbolicConstant(lexeme, new SymbolicConstant(
-                lexeme, SymbolicConstant.Type.KEYWORD, String.format("%sType", capitalizedType)));
-
-        // This is for literal values of the type
-        String literalLexeme = String.format("<%s>", lexeme);
-        this.addSymbolicConstant(literalLexeme, new SymbolicConstant(
-                literalLexeme, SymbolicConstant.Type.LITERAL, String.format("%sLit", capitalizedType)));
-
-        // Types have nodes used in declarations and to represent literals
-        this.nodes.put(String.format("%s_TYPE", lexeme.toUpperCase()), new NonTerminal(String.format("%s_TYPE",
-                lexeme.toUpperCase())));
-        this.nodes.put(String.format("%s_LIT", lexeme.toUpperCase()), new NonTerminal(String.format("%s_LIT",
-                lexeme.toUpperCase())));
-
-        // The literal requires a symbol
-        this.addAstWithSymbol(String.format("%s_LIT", lexeme.toUpperCase()));
-    }
-
-    public void addProduction(String productionNonTerminal, String production) {
-        if (!this.productions.containsKey(productionNonTerminal)) {
-            this.productions.put(productionNonTerminal, new ArrayList<>());
-        }
-
-        this.productions.get(productionNonTerminal).add(production);
-
-        // This is a little hacky, but its a special case that is hard to detect
-        // from the grammar and I didn't want to add yet another flag to the grammar
-        // file
-        if (productionNonTerminal.equals("IDENTIFIER")) {
-            this.addSymbolicConstant("<id>",
-                    new SymbolicConstant("<id>", SymbolicConstant.Type.IDENTIFIER, "Identifier"));
-        }
-
-        // Now process the production into terminals and non terminals
-        List<String> productionParts = Arrays.asList(production.split("\\s+")).stream().map(item -> item.trim())
-                .toList();
-        NonTerminal parent = this.getNonTerminal(productionNonTerminal);
-
-        for (String part : productionParts) {
-            if (part.startsWith("'") && productionNonTerminal.equals("TYPE")) {
-                this.addType(part.replace("'", ""));
-            } else if (part.startsWith("'")) {
-                String lexeme = part.replace("'", "");
-
-                // If this terminal is an operator or separator, it will already have been added
-                // to the keywords
-                if (this.getSymbolicConstant(lexeme) == null) {
-                    this.addKeyword(lexeme);
-                }
-
-                parent.addChild(new Terminal(lexeme, this.getSymbolicConstant(lexeme)));
-            } else {
-                parent.addChild(new NonTerminal(part));
-            }
-        }
-    }
-
-    public NonTerminal getNonTerminal(String nonTerminal) {
-        if (!this.nodes.containsKey(nonTerminal)) {
-            this.nodes.put(nonTerminal, new NonTerminal(nonTerminal));
-        }
-
-        return (NonTerminal) this.nodes.get(nonTerminal);
+    public List<String> getAllAsts() {
+        return List.copyOf(this.allAsts);
     }
 }

@@ -33,7 +33,7 @@ boolean
 
 # INTERNALS
 eof
-check
+$bogusName.toLowerCase()
 
 # ASTS
 Assignment

@@ -1,0 +1,10 @@
+package $packageName;
+
+import $packageName.$dao.Token;
+import $packageName.exceptions.$exception;
+
+public interface ILexer {
+    public Token $nextMethod() throws $exception;
+
+    public Token anonymousIdentifierToken(String identifier);
+}

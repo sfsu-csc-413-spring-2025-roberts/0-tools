@@ -1,21 +1,26 @@
 package tools;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import org.apache.velocity.app.VelocityEngine;
+
+import tools.config.ProjectConfiguration;
 import tools.grammar.Grammar;
 import tools.readers.GrammarReader;
-import tools.writers.AstBaseClassWriter;
-import tools.writers.AstNodeWithSymbolWriter;
-import tools.writers.AstNodeWriter;
-import tools.writers.PrintVisitorWriter;
-import tools.writers.SummaryWriter;
-import tools.writers.SymbolTableWriter;
-import tools.writers.TestVisitorWriter;
-import tools.writers.TextWriter;
-import tools.writers.TokenKindWriter;
-import tools.writers.VisitorBaseClassWriter;
-import tools.writers.VisitorTemplateWriter;
+import tools.writers.ast.AstBaseClassWriter;
+import tools.writers.ast.AstWithTokenInterfaceWriter;
+import tools.writers.ast.NodeWriter;
+import tools.writers.lexer.daos.SymbolTableWriter;
+import tools.writers.lexer.daos.SymbolWriter;
+import tools.writers.lexer.daos.TokenKindWriter;
+import tools.writers.lexer.daos.TokenWriter;
+import tools.writers.visitor.CustomVisitorWriter;
+import tools.writers.visitor.PrintVisitorWriter;
+import tools.writers.visitor.TestVisitorWriter;
+import tools.writers.visitor.VisitorWriter;
 
 public class CompilerTools {
     public static void main(String[] args) throws Exception {
@@ -25,7 +30,6 @@ public class CompilerTools {
             System.out.printf("   %-15s %s%n", "-d --debug",
                     "Debug mode to output debugging information while reading the grammar");
             System.out.printf("   %-15s %s%n", "-h --help", "Show this help message");
-            System.out.printf("   %-15s %s%n", "-v --verbose", "Output result of reading the grammar file");
             System.out.printf("   %-15s %s%n", "-s --summary", "Output concise result of reading the grammar file");
             System.out.printf("   %-15s %s%n", "-1 --lexer",
                     "(Re)Generate the files for the lexer (token kind enumeration and symbol table)");
@@ -37,7 +41,6 @@ public class CompilerTools {
         }
 
         boolean debug = hasCommandLineArgument(args, "--debug", "-d");
-        boolean verbose = hasCommandLineArgument(args, "--verbose", "-v");
         boolean summary = hasCommandLineArgument(args, "--summary", "-s");
 
         boolean parser = hasCommandLineArgument(args, "--parser", "-2");
@@ -47,37 +50,66 @@ public class CompilerTools {
         Grammar grammar = new GrammarReader(Path.of(args[0]), debug).read();
 
         if (summary) {
-            new SummaryWriter(grammar).write();
+            System.out.println(grammar);
         }
 
-        if (verbose) {
-            new TextWriter(grammar).write();
-        }
+        VelocityEngine engine = new VelocityEngine();
+        engine.init();
 
         if (newVisitor) {
             String className = getCommandLineArgumentValue(args, "--new-visitor", "-n");
+            System.out.println(String.format("Creating class %s", className));
 
-            new VisitorTemplateWriter(grammar, className).write();
+            new CustomVisitorWriter(grammar, className).write(engine,
+                    "src/tools/templates/visitor/custom-visitor.java.vm");
             return;
         }
 
         if (lexer) {
-            new TokenKindWriter(grammar).write();
-            new SymbolTableWriter(grammar).write();
+            createDirectory(ProjectConfiguration.daoPackagePath, true);
+            new TokenKindWriter(grammar, ProjectConfiguration.tokenKind).write(engine,
+                    "src/tools/templates/lexer/daos/token-kind.java.vm");
+            new SymbolWriter(grammar).write(engine, "src/tools/templates/lexer/daos/symbol.java.vm");
+            new SymbolTableWriter(grammar).write(engine, "src/tools/templates/lexer/daos/symbol-table.java.vm");
+            new TokenWriter(grammar).write(engine, "src/tools/templates/lexer/daos/token.java.vm");
         }
 
         if (parser) {
-            new AstBaseClassWriter(grammar).write();
+            createDirectory(ProjectConfiguration.astPackagePath, true);
+            new AstBaseClassWriter(grammar, ProjectConfiguration.astClassName).write(engine,
+                    "src/tools/templates/ast/base-class.java.vm");
+            new AstWithTokenInterfaceWriter(grammar, ProjectConfiguration.interfaceWithTokenName).write(engine,
+                    "src/tools/templates/ast/interface-with-token.java.vm");
 
-            AstNodeWriter.prepareNodeDirectory();
-            new AstNodeWriter(grammar).write();
-            new AstNodeWithSymbolWriter(grammar).write();
+            createDirectory(ProjectConfiguration.treePackagePath, true);
+            new NodeWriter(grammar).write(engine, "src/tools/templates/ast/class-*-token.java.vm");
 
-            VisitorBaseClassWriter.prepareVisitorDirectory();
-            new VisitorBaseClassWriter(grammar).write();
-            new PrintVisitorWriter(grammar).write();
-            new TestVisitorWriter(grammar).write();
+            createDirectory(ProjectConfiguration.visitorPackagePath, true);
+            new VisitorWriter(grammar, ProjectConfiguration.visitorClassName).write(engine,
+                    "src/tools/templates/visitor/visitor.java.vm");
+            new PrintVisitorWriter(grammar, ProjectConfiguration.printVisitorClassName).write(engine,
+                    "src/tools/templates/visitor/output-visitor.java.vm");
+
+            createDirectory(Path.of("src", "tests", "helpers"), true);
+            new TestVisitorWriter(grammar).write(engine, "src/tools/templates/visitor/test-visitor.java.vm");
         }
+    }
+
+    private static void createDirectory(Path path, boolean deleteAll) throws Exception {
+        if (path.toFile().exists() && !path.toFile().isDirectory()) {
+            throw new Exception(
+                    String.format("The path [%s] exists, and is not a directory. Could not create.", path.toString()));
+        }
+
+        if (path.toFile().exists() && deleteAll) {
+            for (File file : path.toFile().listFiles()) {
+                if (!file.isDirectory()) {
+                    file.delete();
+                }
+            }
+        }
+
+        Files.createDirectories(path);
     }
 
     private static boolean hasCommandLineArgument(String[] args, String... options) {
@@ -87,7 +119,6 @@ public class CompilerTools {
     private static String getCommandLineArgumentValue(String[] args, String... options) {
         for (String option : options) {
             int index = Arrays.asList(args).indexOf(option);
-            System.out.println(String.format("index of %s: %d", option, index));
 
             if (index == -1 || index + 1 >= args.length) {
                 continue;
