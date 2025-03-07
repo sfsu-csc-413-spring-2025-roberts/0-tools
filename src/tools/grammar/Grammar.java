@@ -98,4 +98,40 @@ public class Grammar {
     public List<String> getAllAsts() {
         return List.copyOf(this.allAsts);
     }
+
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(String.format("### Token (%d) ###%s", this.allConstants.size(), System.lineSeparator()));
+        buffer.append(String.format("Keywords (%d):%s    %s%s", this.keywords.size(), System.lineSeparator(),
+                String.join(", ", this.keywords.stream()
+                        .map(c -> String.format("%s ('%s')", c.getConstantName(), c.getLexeme())).toList()),
+                System.lineSeparator()));
+        buffer.append(String.format("Types (%d):%s    %s%s", this.types.size(), System.lineSeparator(),
+                String.join(", ", this.types.stream()
+                        .map(c -> String.format("%s ('%s')", c.getConstantName(), c.getLexeme())).toList()),
+                System.lineSeparator()));
+        buffer.append(String.format("Operators (%d):%s    %s%s", this.operators.size(), System.lineSeparator(),
+                String.join(", ", this.operators.stream()
+                        .map(c -> String.format("%s ('%s')", c.getConstantName(), c.getLexeme())).toList()),
+                System.lineSeparator()));
+        buffer.append(String.format("Separators (%d):%s    %s%s", this.separators.size(), System.lineSeparator(),
+                String.join(", ", this.separators.stream()
+                        .map(c -> String.format("%s ('%s')", c.getConstantName(), c.getLexeme())).toList()),
+                System.lineSeparator()));
+        buffer.append(String.format("Internals (%d):%s    %s%s", this.internals.size(), System.lineSeparator(),
+                String.join(", ", this.internals.stream()
+                        .map(c -> String.format("%s ('%s')", c.getConstantName(), c.getLexeme())).toList()),
+                System.lineSeparator()));
+
+        buffer.append(String.format("%s### ASTs (%d) ###%s", System.lineSeparator(), this.allAsts.size(),
+                System.lineSeparator()));
+        buffer.append(String.format("No tokens (%d):%s    %s%s", this.asts.size(), System.lineSeparator(),
+                String.join(", ", this.asts), System.lineSeparator()));
+        buffer.append(String.format("With tokens (%d):%s    %s%s", this.astsWithTokens.size(), System.lineSeparator(),
+                String.join(", ", this.astsWithTokens), System.lineSeparator()));
+
+        return buffer.toString();
+    }
 }
