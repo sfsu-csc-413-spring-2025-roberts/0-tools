@@ -13,8 +13,9 @@ public class InternalReader extends LineReader {
     @Override
     public void read() throws Exception {
         String internal = this.line.trim();
+        String internalName = String.format("%s%s", internal.substring(0, 1).toUpperCase(), internal.substring(1));
 
-        this.grammar.addInternal(new SymbolicConstant(String.format("{%s}", internal), internal.toUpperCase()));
+        this.grammar.addInternal(new SymbolicConstant(String.format("{%s}", internalName), internalName));
     }
 
 }
