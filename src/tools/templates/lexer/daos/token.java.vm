@@ -19,7 +19,7 @@ public class Token {
         return this.symbol.getLexeme();
     }
 
-    public $tokenKind getKind() {
+    public $tokenKind getTokenKind() {
         return this.symbol.getKind();
     }
 
@@ -34,6 +34,6 @@ public class Token {
     @Override
     public String toString() {
         return String.format("%s l: %d r: %d (%s)",
-                this.getLexeme(), this.startColumn, this.endColumn, this.getKind());
+                this.getLexeme(), this.startColumn, this.endColumn, this.getTokenKind());
     }
 }
