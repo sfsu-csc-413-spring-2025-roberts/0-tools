@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.velocity.app.VelocityEngine;
 
@@ -13,6 +14,8 @@ import tools.readers.GrammarReader;
 import tools.writers.ast.AstBaseClassWriter;
 import tools.writers.ast.AstWithTokenInterfaceWriter;
 import tools.writers.ast.NodeWriter;
+import tools.writers.lexer.TestSourceReaderTestWriter;
+import tools.writers.lexer.TestSourceReaderWriter;
 import tools.writers.lexer.daos.SymbolTableWriter;
 import tools.writers.lexer.daos.SymbolWriter;
 import tools.writers.lexer.daos.TokenKindWriter;
@@ -66,44 +69,58 @@ public class CompilerTools {
         }
 
         if (lexer) {
-            createDirectory(ProjectConfiguration.daoPackagePath, true);
+            System.out.println("Creating lexer daos...");
+            createDirectory(ProjectConfiguration.daoPackagePath, true,
+                    Path.of(ProjectConfiguration.daoPackagePath.toString(), "Token.java"));
             new TokenKindWriter(grammar, ProjectConfiguration.tokenKind).write(engine,
                     "src/tools/templates/lexer/daos/token-kind.java.vm");
             new SymbolWriter(grammar).write(engine, "src/tools/templates/lexer/daos/symbol.java.vm");
             new SymbolTableWriter(grammar).write(engine, "src/tools/templates/lexer/daos/symbol-table.java.vm");
             new TokenWriter(grammar).write(engine, "src/tools/templates/lexer/daos/token.java.vm");
+
+            System.out.println("Creating lexer testing classes...");
+            createDirectory(Path.of("tests", "helpers"), true);
+            new TestSourceReaderWriter(grammar).write(engine, "src/tools/templates/lexer/test-source-reader.java.vm");
+            new TestSourceReaderTestWriter(grammar).write(engine,
+                    "src/tools/templates/lexer/test-source-reader-test.java.vm");
         }
 
         if (parser) {
+            System.out.println("Creating AST base classes...");
             createDirectory(ProjectConfiguration.astPackagePath, true);
             new AstBaseClassWriter(grammar, ProjectConfiguration.astClassName).write(engine,
                     "src/tools/templates/ast/base-class.java.vm");
             new AstWithTokenInterfaceWriter(grammar, ProjectConfiguration.interfaceWithTokenName).write(engine,
                     "src/tools/templates/ast/interface-with-token.java.vm");
 
+            System.out.println("Creating AST classes...");
             createDirectory(ProjectConfiguration.treePackagePath, true);
             new NodeWriter(grammar).write(engine, "src/tools/templates/ast/class-*-token.java.vm");
 
+            System.out.println("Creating visitor classes...");
             createDirectory(ProjectConfiguration.visitorPackagePath, true);
             new VisitorWriter(grammar, ProjectConfiguration.visitorClassName).write(engine,
                     "src/tools/templates/visitor/visitor.java.vm");
             new PrintVisitorWriter(grammar, ProjectConfiguration.printVisitorClassName).write(engine,
                     "src/tools/templates/visitor/output-visitor.java.vm");
 
-            createDirectory(Path.of("src", "tests", "helpers"), true);
+            System.out.println("Creating ast testing classes...");
+            createDirectory(Path.of("tests", "helpers"), false);
             new TestVisitorWriter(grammar).write(engine, "src/tools/templates/visitor/test-visitor.java.vm");
         }
     }
 
-    private static void createDirectory(Path path, boolean deleteAll) throws Exception {
+    private static void createDirectory(Path path, boolean deleteAll, Path... excluded) throws Exception {
         if (path.toFile().exists() && !path.toFile().isDirectory()) {
             throw new Exception(
                     String.format("The path [%s] exists, and is not a directory. Could not create.", path.toString()));
         }
 
+        List<Path> excludedFiles = Arrays.asList(excluded);
+
         if (path.toFile().exists() && deleteAll) {
             for (File file : path.toFile().listFiles()) {
-                if (!file.isDirectory()) {
+                if (!file.isDirectory() && !excludedFiles.contains(file.toPath())) {
                     file.delete();
                 }
             }

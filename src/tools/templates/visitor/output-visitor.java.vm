@@ -1,0 +1,39 @@
+package $visitorPackageName;
+
+import $astPackageName.*;
+
+public class $printVisitorClassName extends $visitorClassName {
+
+    private final int INDENT_BY = 2;
+    private int indentation = INDENT_BY;
+
+    private void print(String description, AST node) throws Exception {
+        String nodeNumber = String.format("%3d:", node.getNodeNumber());
+        System.out.println(String.format("%-3s %-35.35s",
+                nodeNumber,
+                String.format("%" + indentation + "s%s", "", description)));
+
+        this.indentation += INDENT_BY;
+        this.visitChildren(node);
+        this.indentation -= INDENT_BY;
+    }
+
+    #foreach($className in $astsWithoutTokens)
+    @Override
+    public Object visit$className($astClassName node) throws Exception {
+        print("$className", node);
+        return null;
+    }
+
+    #end
+
+    #foreach($className in $astsWithTokens)
+    @Override
+    public Object visit$className($astClassName node) throws Exception {
+        print(String.format("$className: %s", (($interfaceWithTokenName)node).getToken().getLexeme()), node);
+        return null;
+    }
+
+    #end
+
+}

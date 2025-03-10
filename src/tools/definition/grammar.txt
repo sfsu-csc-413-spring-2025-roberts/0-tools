@@ -8,7 +8,7 @@ return
 
 # TYPES
 int
-boolean
+bool
 
 # OPERATORS
 +  Plus

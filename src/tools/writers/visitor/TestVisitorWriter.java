@@ -32,7 +32,7 @@ public class TestVisitorWriter extends BaseWriter {
 
         Template template = engine.getTemplate(templateFile);
 
-        Path filePath = Path.of("src", "tests", "helpers", "TestVisitor.java");
+        Path filePath = Path.of("tests", "helpers", "TestVisitor.java");
 
         this.writeTemplate(template, context, filePath.toString());
     }

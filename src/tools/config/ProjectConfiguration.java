@@ -20,7 +20,7 @@ public class ProjectConfiguration {
     /**
      * Asts
      */
-    public static final String astClassName = "Ast";
+    public static final String astClassName = "AST";
     public static final String interfaceWithTokenName = "TokenTree";
     public static final String astPackageName = "ast";
     public static final String treePackageName = "nodes";
