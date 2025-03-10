@@ -32,7 +32,7 @@ boolean
 // Comment
 
 # INTERNALS
-eof
+EOF
 bogusToken
 
 # ASTS
