@@ -13,7 +13,7 @@ public class TypeReader extends LineReader {
     @Override
     public void read() throws Exception {
         String type = this.line.trim();
-        String typeConstant = String.format("%s%s", type.substring(0, 1), type.substring(1));
+        String typeConstant = String.format("%s%s", type.substring(0, 1).toUpperCase(), type.substring(1));
 
         this.grammar.addType(new SymbolicConstant(type, String.format("%sType", typeConstant)));
         this.grammar.addType(new SymbolicConstant(String.format("<%s>", type), String.format("%sLit", typeConstant)));
