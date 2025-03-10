@@ -11,7 +11,7 @@ public class ProjectConfiguration {
     public static final String exception = "LexicalException";
     public static final String tokenKind = "TokenKind";
     public static final String tableName = "SymbolTable";
-    public static final String bogusName = "CHECK";
+    public static final String bogusName = "BogusToken";
     public static final String nextMethod = "nextToken";
 
     public static final Path lexerPackagePath = Path.of("src", lexerPackageName);
