@@ -1,0 +1,77 @@
+package tests.helpers;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+import ${lexerPackageName}.${daoPackageName}.$tableName;
+import ${lexerPackageName}.${daoPackageName}.Token;
+import ${lexerPackageName}.${daoPackageName}.$tokenKindClass;
+
+import static ${lexerPackageName}.${daoPackageName}.$tokenKindClass.*;
+
+public class PseudoProgramTokens {
+
+    private static Map<String, $tokenKindClass> pseudoTokenMappings = new HashMap<>();
+
+    static {
+        // Keywords
+        #foreach($token in $keywords)
+        pseudoTokenMappings.put("$token.getLexeme()", $token.getConstantName());
+        #end
+
+        // Operators
+        #foreach($token in $operators)
+        pseudoTokenMappings.put("$token.getLexeme()", $token.getConstantName());
+        #end
+
+        // Separators
+        #foreach($token in $separators)
+        pseudoTokenMappings.put("$token.getLexeme()", $token.getConstantName());
+        #end
+
+        #foreach($token in $literals)
+        pseudoTokenMappings.put("$token.getLexeme()", $token.getConstantName());
+        #end
+    }
+
+    private static Map<String, $tokenKindClass> newTokenMappings = Map.ofEntries(
+            // New operators
+            Map.entry(">", Greater),
+            Map.entry(">=", GreaterEqual),
+
+            // New types
+            Map.entry("hex", HexType),
+            Map.entry("char", CharType),
+
+            // New statement tokens
+            Map.entry("from", From),
+            Map.entry("to", To));
+
+    private static Map<String, Token> pseudoTokens = new HashMap<>();
+    static {
+        pseudoTokenMappings.entrySet().forEach(entry -> {
+            pseudoTokens.put(entry.getKey(),
+                    new Token(${tableName}.symbol(entry.getKey(), entry.getValue()), 0, 0));
+        });
+
+        // Special identifier token
+        pseudoTokens.put("<id>", new Token(${tableName}.symbol("x", Identifier), 0, 0));
+
+        // Special literal tokens
+        pseudoTokens.put("<int>", new Token(${tableName}.symbol("42", IntLit), 0, 0));
+        pseudoTokens.put("<bool>", new Token(${tableName}.symbol("42", IntLit), 0, 0));
+
+        // This semester's assignment tokens
+        newTokenMappings.entrySet().forEach(entry -> {
+            pseudoTokens.put(entry.getKey(),
+                    new Token(${tableName}.symbol(entry.getKey(), entry.getValue()), 0, 0));
+        });
+        pseudoTokens.put("<char>", new Token(${tableName}.symbol("\"a\"", CharLit), 0, 0));
+        pseudoTokens.put("<hex>", new Token(${tableName}.symbol("0xfab", HexLit), 0, 0));
+    }
+
+    public static Token getTestToken(String token) {
+        return pseudoTokens.get(token);
+    }
+}
