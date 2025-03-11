@@ -5,6 +5,7 @@ import java.util.List;
 
 import ${lexerPackageName}.ILexer;
 import ${lexerPackageName}.${daoPackageName}.Token;
+import ${lexerPackageName}.${daoPackageName}.${tokenKindClass};
 import ${lexerPackageName}.exceptions.${lexicalExceptionName};
 
 public class TestLexer implements ILexer {
