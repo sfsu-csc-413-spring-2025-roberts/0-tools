@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ${lexerPackageName}.ILexer;
-import ${lexerPackageName}.${daoPackageName}.Token;
-import ${lexerPackageName}.${daoPackageName}.${tokenKindClass};
+import ${lexerPackageName}.${daoPackageName}.*;
 import ${lexerPackageName}.exceptions.${lexicalExceptionName};
 
 public class TestLexer implements ILexer {
@@ -29,7 +28,7 @@ public class TestLexer implements ILexer {
     @Override
     public Token nextToken() throws $lexicalExceptionName {
         if (index == tokens.size()) {
-            return ${tokenKindClass}.EOF;
+            return new Token(new Symbol(${tokenKindClass}.EOF, "\0"));
         } else {
             return tokens.get(index++);
         }

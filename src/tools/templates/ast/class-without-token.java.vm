@@ -11,6 +11,6 @@ public class $className extends $astClassName {
 
     @Override
     public Object accept($visitorClassName visitor) throws Exception {
-        return visitor.visitAssignmentTree(this);
+        return visitor.visit$className(this);
     }
 }

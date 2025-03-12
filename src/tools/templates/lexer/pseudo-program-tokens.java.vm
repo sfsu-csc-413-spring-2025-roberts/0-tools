@@ -59,8 +59,8 @@ public class PseudoProgramTokens {
         pseudoTokens.put("<id>", new Token(${tableName}.symbol("x", Identifier), 0, 0));
 
         // Special literal tokens
-        pseudoTokens.put("<int>", new Token(${tableName}.symbol("42", IntLit), 0, 0));
-        pseudoTokens.put("<bool>", new Token(${tableName}.symbol("42", IntLit), 0, 0));
+        pseudoTokens.put("<int>", new Token(${tableName}.symbol("1", IntLit), 0, 0));
+        pseudoTokens.put("<bool>", new Token(${tableName}.symbol("1", IntLit), 0, 0));
 
         // This semester's assignment tokens
         newTokenMappings.entrySet().forEach(entry -> {

@@ -10,8 +10,8 @@ public class PseudoProgramAsts {
   static {
     pseudoAsts.put("int", new IntTypeTree());
     pseudoAsts.put("<int>", new IntLitTree(PseudoProgramTokens.getTestToken("<int>")));
-    pseudoAsts.put("boolean", new BoolTypeTree());
-    pseudoAsts.put("<boolean>", new IntLitTree(PseudoProgramTokens.getTestToken("<boolean>")));
+    pseudoAsts.put("bool", new BoolTypeTree());
+    pseudoAsts.put("<bool>", new IntLitTree(PseudoProgramTokens.getTestToken("<bool>")));
 
     // Add new types here for current semester
     pseudoAsts.put("char", new CharTypeTree());
