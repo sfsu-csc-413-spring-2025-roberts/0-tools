@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import tools.config.ProjectConfiguration;
 import tools.grammar.Grammar;
@@ -43,13 +45,15 @@ public class CompilerTools {
         boolean lexer = hasCommandLineArgument(args, "--lexer", "-1") || parser;
         boolean newVisitor = hasCommandLineArgument(args, "--new-visitor", "-n");
 
-        Grammar grammar = new GrammarReader(Path.of(args[0]), debug).read();
+        Grammar grammar = new GrammarReader(Path.of(args[0]).toAbsolutePath(), debug).read();
 
         if (summary) {
             System.out.println(grammar);
         }
 
         VelocityEngine engine = new VelocityEngine();
+        engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+        engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         engine.init();
 
         if (newVisitor) {
@@ -57,7 +61,7 @@ public class CompilerTools {
             System.out.println(String.format("Creating class %s", className));
 
             new CustomVisitorWriter(grammar, className).write(engine,
-                    "src/tools/templates/visitor/custom-visitor.java.vm");
+                    "templates/visitor/custom-visitor.java.vm");
             return;
         }
 
@@ -68,43 +72,43 @@ public class CompilerTools {
             createDirectory(ProjectConfiguration.daoPackagePath, true,
                     Path.of(ProjectConfiguration.daoPackagePath.toString(), "Token.java"));
             new TokenKindWriter(grammar, ProjectConfiguration.tokenKind).write(engine,
-                    "src/tools/templates/lexer/daos/token-kind.java.vm");
-            new SymbolWriter(grammar).write(engine, "src/tools/templates/lexer/daos/symbol.java.vm");
-            new SymbolTableWriter(grammar).write(engine, "src/tools/templates/lexer/daos/symbol-table.java.vm");
-            new TokenWriter(grammar).write(engine, "src/tools/templates/lexer/daos/token.java.vm");
+                    "templates/lexer/daos/token-kind.java.vm");
+            new SymbolWriter(grammar).write(engine, "templates/lexer/daos/symbol.java.vm");
+            new SymbolTableWriter(grammar).write(engine, "templates/lexer/daos/symbol-table.java.vm");
+            new TokenWriter(grammar).write(engine, "templates/lexer/daos/token.java.vm");
 
             System.out.println("Creating lexer testing classes...");
-            new TestSourceReaderWriter(grammar).write(engine, "src/tools/templates/lexer/test-source-reader.java.vm");
+            new TestSourceReaderWriter(grammar).write(engine, "templates/lexer/test-source-reader.java.vm");
             new TestSourceReaderTestWriter(grammar).write(engine,
-                    "src/tools/templates/lexer/test-source-reader-test.java.vm");
+                    "templates/lexer/test-source-reader-test.java.vm");
         }
 
         if (parser) {
             System.out.println("Creating AST base classes...");
             createDirectory(ProjectConfiguration.astPackagePath, true);
             new AstBaseClassWriter(grammar, ProjectConfiguration.astClassName).write(engine,
-                    "src/tools/templates/ast/base-class.java.vm");
+                    "templates/ast/base-class.java.vm");
             new AstWithTokenInterfaceWriter(grammar, ProjectConfiguration.interfaceWithTokenName).write(engine,
-                    "src/tools/templates/ast/interface-with-token.java.vm");
+                    "templates/ast/interface-with-token.java.vm");
 
             System.out.println("Creating AST classes...");
             createDirectory(ProjectConfiguration.treePackagePath, true);
-            new NodeWriter(grammar).write(engine, "src/tools/templates/ast/class-*-token.java.vm");
+            new NodeWriter(grammar).write(engine, "templates/ast/class-*-token.java.vm");
 
             System.out.println("Creating visitor classes...");
             createDirectory(ProjectConfiguration.visitorPackagePath, true);
             new VisitorWriter(grammar, ProjectConfiguration.visitorClassName).write(engine,
-                    "src/tools/templates/visitor/visitor.java.vm");
+                    "templates/visitor/visitor.java.vm");
             new PrintVisitorWriter(grammar, ProjectConfiguration.printVisitorClassName).write(engine,
-                    "src/tools/templates/visitor/output-visitor.java.vm");
+                    "templates/visitor/output-visitor.java.vm");
 
             System.out.println("Creating ast testing classes...");
-            new TestVisitorWriter(grammar).write(engine, "src/tools/templates/visitor/test-visitor.java.vm");
-            new TestLexerWriter(grammar).write(engine, "src/tools/templates/lexer/test-lexer.java.vm");
+            new TestVisitorWriter(grammar).write(engine, "templates/visitor/test-visitor.java.vm");
+            new TestLexerWriter(grammar).write(engine, "templates/lexer/test-lexer.java.vm");
             new PseudoProgramTokensWriter(grammar).write(engine,
-                    "src/tools/templates/lexer/pseudo-program-tokens.java.vm");
-            new PseudoProgramAstWriter(grammar).write(engine, "src/tools/templates/ast/pseudo-program-asts.java.vm");
-            new PseudoProgramWriter(grammar).write(engine, "src/tools/templates/parser/pseudo-program.java.vm");
+                    "templates/lexer/pseudo-program-tokens.java.vm");
+            new PseudoProgramAstWriter(grammar).write(engine, "templates/ast/pseudo-program-asts.java.vm");
+            new PseudoProgramWriter(grammar).write(engine, "templates/parser/pseudo-program.java.vm");
         }
     }
 
